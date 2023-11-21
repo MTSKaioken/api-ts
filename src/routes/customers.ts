@@ -1,12 +1,24 @@
-import { createCustomerController } from "../controllers/customersController";
+import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from "fastify";
+import { CreateCustomerController  } from "../controllers/CreateCustomerController";
+import { ListCustomersController } from "../controllers/ListCustomersController";
+import { GetCustomerController } from "../controllers/GetCustomerController";
+import { DeleteCustomerController } from "../controllers/DeleteCustomerController";
 
-import express from 'express';
+export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
+    fastify.get("/customers", async (request: FastifyRequest, response: FastifyReply) => {
+        return new ListCustomersController().handle(request, response);
+    })
 
-const router = express.Router();
+    fastify.get("/customer/:id?", async (request: FastifyRequest, response: FastifyReply) => {
+        return new GetCustomerController().handle(request, response);
+    })
 
-console.log('customers route')
+    fastify.post("/customers", async (request: FastifyRequest, response: FastifyReply) => {
+        return new CreateCustomerController().handle(request, response);
+    })
 
-router.post('/', createCustomerController);
-
-module.exports = router;
+    fastify.delete("/customers/:id?", async (request: FastifyRequest, response: FastifyReply) => {
+        return new DeleteCustomerController().handle(request, response);
+    })
+}
 
